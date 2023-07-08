@@ -68,7 +68,7 @@ func main() {
 			return err
 		}
 
-		if !info.IsDir() {
+		if !info.IsDir() && !strings.HasPrefix(info.Name(), ".") {
 			extension := strings.ToLower(filepath.Ext(path))
 			if len(extensions) == 0 {
 				filename := info.Name()
@@ -90,7 +90,7 @@ func main() {
 					break
 				}
 			}
-			fmt.Printf("%s moved to %s", info.Name(), csvFilePath)
+			fmt.Printf("%s written to %s\n", info.Name(), csvFilePath)
 		}
 
 		return nil
