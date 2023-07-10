@@ -47,7 +47,7 @@ func main() {
 	fileName := fmt.Sprintf("%s_%s.csv", filepath.Base(pathToCheck), time.Now().Format("02-01-2006"))
 	csvFilePath := filepath.Join(homeDirectory, "Downloads", fileName)
 
-	headers := []string{"Filename", "Extension"}
+	headers := []string{"Filename", "Path", "Extension"}
 
 	file, err := os.Create(csvFilePath)
 	if err != nil {
@@ -69,10 +69,16 @@ func main() {
 		}
 
 		if !info.IsDir() && !strings.HasPrefix(info.Name(), ".") {
+			relativePath, err := filepath.Rel(pathToCheck, path)
+			folder := filepath.Dir(relativePath)
+
+			if err != nil {
+				return err
+			}
 			extension := strings.ToLower(filepath.Ext(path))
 			if len(extensions) == 0 {
 				filename := info.Name()
-				err := writer.Write([]string{filename, extension})
+				err := writer.Write([]string{filename, folder, extension})
 				if err != nil {
 					return err
 				}
@@ -83,7 +89,7 @@ func main() {
 				if extension == ext {
 					filename := info.Name()
 
-					err := writer.Write([]string{filename, extension})
+					err := writer.Write([]string{filename, folder, extension})
 					if err != nil {
 						return err
 					}
